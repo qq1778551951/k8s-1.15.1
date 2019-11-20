@@ -1,0 +1,8 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: outside-cmis-eim
+  namespace: ns-prod
+spec:
+  type: ExternalName
+  externalName: outside.eim.cmis.htpc.com.cn

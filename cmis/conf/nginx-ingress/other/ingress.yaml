@@ -1,0 +1,171 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: ns-prod
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: 1s
+    nginx.ingress.kubernetes.io/proxy-send-timeout: 60s
+    nginx.ingress.kubernetes.io/proxy-read-timeout: 60s
+    nginx.ingress.kubernetes.io/server-snippet: |
+         location /rest/cms {
+            rewrite /rest((\/.+?)*)$ /cmis-cms/rest/$1 last;
+         }
+         
+         location /a/cms {
+            rewrite /a((\/.+?)*)$ /cmis-cms/a/$1 last;
+         }
+       
+         location /f/cms {
+            rewrite /f((\/.+?)*)$ /cmis-cms/f/$1 last;
+         }
+
+         location /a/party {
+            rewrite /a((\/.+?)*)$ /cmis-party/a/$1 last;
+         }
+
+         location /a/mm {
+            rewrite /a((\/.+?)*)$ /cmis-mm/a/$1 last;
+         }
+
+         location /uncRest/mm {
+            rewrite /uncRest((\/.+?)*)$ /cmis-mm/uncRest/$1 last;
+         }
+
+         location /a/tum {
+            rewrite /a((\/.+?)*)$ /cmis-tum/a/$1 last;
+         }
+
+         location /a/qm {
+            rewrite /a((\/.+?)*)$ /cmis-qm/a/$1 last;
+         }
+
+         location /rest/cm {
+            rewrite /rest((\/.+?)*)$ /cmis-cm/rest/$1 last;
+         }
+
+         location /a/cm {
+            rewrite /a((\/.+?)*)$ /cmis-cm/a/$1 last;
+         }
+
+         location /rest/hr {
+            rewrite /rest((\/.+?)*)$ /cmis-hr/rest/$1 last;
+         }
+
+         location /f/hr {
+            rewrite /f((\/.+?)*)$ /cmis-hr/f/$1 last;
+         }
+
+         location /a/hr {
+            rewrite /a((\/.+?)*)$ /cmis-hr/a/$1 last;
+         }
+
+         location /rest/stm {
+            rewrite /rest((\/.+?)*)$ /cmis-stm/rest/$1 last;
+         }
+
+         location /a/stm {
+            rewrite /a((\/.+?)*)$ /cmis-stm/a/$1 last;
+         }
+
+         location /rest/tm {
+            rewrite /rest((\/.+?)*)$ /cmis-tm/rest/$1 last;
+         }
+
+         location /a/tm {
+            rewrite /a((\/.+?)*)$ /cmis-tm/a/$1 last;
+         }
+
+         location /static/help {
+            rewrite /static/help((\/.+?)*)$ /cmis-static/static/help/$1 last;
+         }
+
+         location /cmis-static {
+            rewrite /cmis-static((\/.+?)*)$ /cmis-static-f/$1 last;
+         }
+
+spec:
+  tls:
+  - hosts:
+    - cmis.htpc.com.cn
+    secretName: cmis-secret-tls-prod-new
+  rules:
+  - host: cmis.htpc.com.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cmis-all-prod
+          servicePort: 8080
+      - path: /cmis-party
+        backend: 
+          serviceName: cmis-party-prod
+          servicePort: 8080
+      - path: /cmis-cms
+        backend: 
+          serviceName: cmis-cms-prod
+          servicePort: 8080
+      - path: /cmis-mm
+        backend: 
+          serviceName: cmis-mm-prod
+          servicePort: 8080
+      - path: /cmis-tum
+        backend: 
+          serviceName: cmis-tum-prod
+          servicePort: 8080
+      - path: /cmis-qm
+        backend: 
+          serviceName: cmis-qm-prod
+          servicePort: 8080
+      - path: /cmis-cm
+        backend: 
+          serviceName: cmis-cm-prod
+          servicePort: 8080
+      - path: /cmis-hr
+        backend: 
+          serviceName: cmis-hr-prod
+          servicePort: 8080
+      - path: /cmis-stm
+        backend: 
+          serviceName: cmis-stm-prod
+          servicePort: 8080
+      - path: /cmis-tm
+        backend:
+          serviceName: cmis-tm-prod
+          servicePort: 8080
+      - path: /cmis-static-f
+        backend:
+          serviceName: cmis-static-f-prod
+          servicePort: 80
+      - path: /cmis-approve-f
+        backend:
+          serviceName: cmis-approve-f-prod
+          servicePort: 80     
+      - path: /cmis-help-f
+        backend:
+          serviceName: cmis-help-f-prod
+          servicePort: 80     
+      - path: /cmis-cms-f
+        backend:
+          serviceName: cmis-cms-f-prod
+          servicePort: 80     
+      - path: /cmis-comm-f
+        backend:
+          serviceName: cmis-comm-f-prod
+          servicePort: 80
+      - path: /cmis-eim
+        backend:
+          serviceName: outside-cmis-eim
+          servicePort: 8080
+      - path: /docview
+        backend:
+          serviceName: outside-docview
+          servicePort: 80
+      - path: /data
+        backend:
+          serviceName: outside-docview
+          servicePort: 80
